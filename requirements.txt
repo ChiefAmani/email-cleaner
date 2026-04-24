@@ -1,4 +1,15 @@
+# Email Cleaner Application Dependencies
+# This file contains all the required Python packages to run the email cleaner and CSV sorting application.
+# Install these dependencies using the following command: pip install -r requirements.txt
+
+# Flask is used to serve the web application, handle CSV file uploads, and provide the REST API endpoints for downloading the cleaned data.
 Flask==3.0.2
+
+# pandas is utilized for robust CSV parsing, data manipulation, filtering out missing values, splitting names, and sorting the final dataset.
 pandas==2.2.1
+
+# phonenumbers provides the logic to parse, validate, and standardize various phone number inputs into the consistent E.164 format.
 phonenumbers==8.13.32
+
+# Werkzeug is a comprehensive WSGI web application library, required as a core dependency for Flask's routing, request handling, and file security.
 Werkzeug==3.0.1
