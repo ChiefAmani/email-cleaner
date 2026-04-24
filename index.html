@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Cleaner & Sorter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 4px;
+            background-color: #fafafa;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #results {
+            margin-top: 20px;
+            display: none;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+        }
+        .download-link {
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .download-link:hover {
+            background-color: #0b7dda;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSV Data Cleaner</h1>
+        <p>Upload your customer CSV file to clean, sort, and standardize the data.</p>
+        
+        <div class="upload-area">
+            <form id="uploadForm">
+                <input type="file" id="csvFile" accept=".csv" required>
+                <br><br>
+                <button type="submit">Process File</button>
+            </form>
+            <div id="loading" style="display: none; margin-top: 15px;">Processing... Please wait.</div>
+            <div id="errorMsg" class="error"></div>
+        </div>
+
+        <div id="results">
+            <h3>Processing Complete!</h3>
+            <p id="successMsg"></p>
+            <a id="cleanedLink" class="download-link" href="#" target="_blank">Download Cleaned CSV</a>
+            <a id="deletedLink" class="download-link" href="#" target="_blank" style="background-color: #f44336;">Download Deleted Emails</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('errorMsg').textContent = '';
+            document.getElementById('results').style.display = 'none';
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('successMsg').textContent = data.message;
+                    document.getElementById('cleanedLink').href = data.cleaned_data_url;
+                    document.getElementById('deletedLink').href = data.deleted_emails_url;
+                    document.getElementById('results').style.display = 'block';
+                } else {
+                    document.getElementById('errorMsg').textContent = 'Error: ' + data.error;
+                }
+            } catch (error) {
+                document.getElementById('errorMsg').textContent = 'An error occurred during upload.';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
