@@ -41,7 +41,8 @@ def standardize_phone(phone):
 
 @app.route('/')
 def index():
-    with open('index.html', 'r') as f:
+    index_path = os.path.join(BASE_DIR, 'index.html')
+    with open(index_path, 'r') as f:
         return render_template_string(f.read())
 
 @app.route('/upload', methods=['POST'])
